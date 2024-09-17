@@ -41,7 +41,7 @@ def count_clicks(access_token, url_key):
 
 def main():
     long_url_input = input("Введите ссылку: ")
-    VK_API_TOKEN = os.environ.get('vk_token')
+    vk_token = os.environ.get('VK_TOKEN')
     if not is_valid_url(long_url_input):
         print("Ошибка: введен некорректный адрес.")
         return
@@ -49,10 +49,10 @@ def main():
     try:
         if is_shortened_link(long_url_input):
             url_key = long_url_input.split('/')[-1]
-            click_count = count_clicks(VK_API_TOKEN, url_key)
+            click_count = count_clicks(vk_token, url_key)
             print(f"Количество кликов по сокращенной ссылке: {click_count}")
         else:
-            shortened_url = shorten_link(VK_API_TOKEN, long_url_input)
+            shortened_url = shorten_link(vk_token, long_url_input)
             print(f"Сокращенная ссылка: {shortened_url}")
     except requests.exceptions.RequestException as e:
         print(f"Произошла ошибка при запросе: {e}")
