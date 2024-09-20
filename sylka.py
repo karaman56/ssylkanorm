@@ -1,6 +1,7 @@
 import requests
 import os
 from urllib.parse import urlparse
+import argparse
 
 API_URL_SHORTEN_WITH_APIVK = 'https://api.vk.com/method/utils.getShortLink'
 API_URL_STATS_WITH_APIVK = 'https://api.vk.com/method/utils.getLinkStats'
@@ -40,7 +41,7 @@ def count_clicks(access_token, url_key):
 
 
 def main():
-    long_url_input = input("Введите ссылку: ")
+    long_url_input = argparse
     vk_token = os.environ.get('VK_TOKEN')
     if not is_valid_url(long_url_input):
         print("Ошибка: введен некорректный адрес.")
