@@ -2,6 +2,9 @@ import requests
 import os
 from urllib.parse import urlparse
 import argparse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 API_URL_SHORTEN_WITH_APIVK = 'https://api.vk.com/method/utils.getShortLink'
 API_URL_STATS_WITH_APIVK = 'https://api.vk.com/method/utils.getLinkStats'
@@ -40,9 +43,7 @@ def count_clicks(access_token, url_key):
     return response.json()['response'].get('clicks', 0)
 
 
-def main():
-    long_url_input = argparse
-    vk_token = os.environ.get('VK_TOKEN')
+def main(long_url_input, vk_token):
     if not is_valid_url(long_url_input):
         print("Ошибка: введен некорректный адрес.")
         return
@@ -57,11 +58,22 @@ def main():
             print(f"Сокращенная ссылка: {shortened_url}")
     except requests.exceptions.RequestException as e:
         print(f"Произошла ошибка при запросе: {e}")
+    except KeyError:
+        print("Ошибка: не удалось получить данные о кликах.")
     except Exception as e:
         print(f"Произошла ошибка: {e}")
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Сокращение ссылок и получение статистики кликов.')
+    parser.add_argument('long_url', type=str, help='Длинная ссылка, которую нужно сократить или для которой нужно получить статистику кликов.')
+    parser.add_argument('--token', type=str, help='Токен доступа VK. Если не указан, будет использован токен из переменной окружения VK_TOKEN.')
 
+    args = parser.parse_args()
 
+    vk_token = args.token if args.token else os.environ.get('VK_TOKEN')
+
+    if not vk_token:
+        print("Ошибка: токен доступа не указан и не найден в переменных окружения.")
+    else:
+        main(args.long_url, vk_token)
